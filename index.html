@@ -24,7 +24,9 @@
                 height: 15vw;
                 border: 1px azure solid;
             }
-            .circle{
+
+            
+            .cross,.circle {
                 height: 14vw;
                 margin:auto;
                 position: absolute;
@@ -117,7 +119,7 @@
 
             var val;
             if (cell_states_sum() % 2 == 0){
-                img_html = "<img src='./static_files/img/cross.svg'>";
+                img_html = "<img class='cross' src='./static_files/img/cross.svg'>";
                 val = 1;
             }
             else{
