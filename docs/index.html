@@ -1,0 +1,324 @@
+<html>
+	<head>
+	<title>Brandon Tang - Tic Tac Toe</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, minimum-scale=1">
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="./static_files/semantic.min.css">
+        <script src="./static_files/jquery-3.1.1.min.js"></script>
+        <script src="./static_files/semantic.min.js"></script>
+        
+        <style>
+            body{
+                background-color: #d5f4e6;
+            }
+            .main_content{
+                margin-left: 20px;
+                margin-right: 20px;
+            } 
+            p{
+                font-size: 20;
+            }
+
+            .cell{
+                background-color: aqua;
+                height: 100px;
+                width: 100px;
+                border: 1px azure solid;
+            }
+            .circle{
+                height: 70px;
+                margin:auto;
+                position: absolute;
+                top:0;
+                bottom:0;
+                left: 0;
+                right: 0;
+            }
+        </style>
+    
+	</head>
+	<body>
+
+        <div class="ui container" style="margin-top: 20px;">
+                <div class="ui segment">
+                    
+                    <div id="header_div">
+                        <img class="ui medium bordered circular centered image" src="static_files/img/github_avatar.jpeg">
+                        <br>
+                        <div class="ui centered grid">
+                            <div class="one column computer only row">
+                                <h2 class="ui center aligned header" style="font-size: 45px;">Brandon Tang<br>Tic Tac Toe</h2>
+                            </div>
+                            <div class="one column mobile only row">
+                                <h1 class="ui center aligned header" style="font-size: 45px;">Brandon Tang<br>Tic Tac Toe</h1>
+                        
+                            </div>
+                        </div>
+                        <br>
+
+                    </div>
+                    
+                    <div class="main_content">
+                        <div class="ui huge dividing header" id="overview">Tic Tac Toe</div>
+                        <div class="ui toggle checkbox" id="player_check_div">
+                            <input type="checkbox" tabindex="0" class="hidden" id="2_player_check">
+                            <label>Play Against Another Human</label>
+                        </div>
+                        <div style="width: 300px; margin:auto;">
+                            <div class="ui three column padded grid">
+                                <div class="teal column cell" id="00_cell"></div>
+                                <div class="teal column cell" id="01_cell"></div>
+                                <div class="teal column cell" id="02_cell"></div>
+                                <div class="teal column cell" id="10_cell"></div>
+                                <div class="teal column cell" id="11_cell"></div>
+                                <div class="teal column cell" id="12_cell"></div>
+                                <div class="teal column cell" id="20_cell"></div>
+                                <div class="teal column cell" id="21_cell"></div>
+                                <div class="teal column cell" id="22_cell"></div>
+                            </div>
+                        </div>
+                        <br>
+                        <div style="text-align: center;">
+                            <button class="ui button" onclick="reset_game()">Reset Game</button>
+                            <button class="ui button" id="start_button" onclick="site_click(1,1)">Start Game</button>
+                        </div>
+                        
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+    <script>
+        
+        var priority_list = [[1,1], [0,0], [0,2], [2,0], [2,2], [0,1], [1,0], [1,2], [2,1]];
+        var cell_states = [[0,0,0],[0,0,0],[0,0,0]]; //3x3 Matrix
+        var disable_game = false;
+        
+        // Reset When Changing Game Tyoe
+        $('#player_check_div').click(function(){
+            reset_game();
+        });
+
+        // Function to tell whether it is player 1 or 2 turns
+        function cell_states_sum(){
+            var sum = 0;
+            for (var i=0; i < 3; i++){
+                for (var j=0; j<3; j++){
+                    sum += cell_states[i][j];
+                }
+            }
+            return sum;
+        }
+        // Function to Process User Clicks
+        $('div.cell').click(function(){
+            if (disable_game)return;
+
+            var val;
+            if (cell_states_sum() % 2 == 0){
+                img_html = "<img src='./static_files/img/cross.svg'>";
+                val = 1;
+            }
+            else{
+                img_html = "<img class='circle' src='./static_files/img/circle.png'>";
+                val = -1;
+            }               
+
+            var cell_id = this.id;
+            var $this = $(this);
+            if ($this.html() == ""){
+                $this.html(img_html);
+                    
+                var row = cell_id[0];
+                var column = cell_id[1];
+                cell_states[row][column] = val;
+
+                if (check_full_win()) return ;
+
+                if ($("#2_player_check").prop("checked") == false)algo_update();
+            }
+            else{
+                console.log($this.html());
+            }
+            
+                
+        })
+
+        function site_click(row, col){
+            cell_states[row][col] = -1;
+            id = "#" + row.toString() + col.toString() + "_cell";
+            $(id).html("<img class='circle' src='./static_files/img/circle.png'>");
+            $('#start_button').hide();
+            check_full_win();
+        }
+
+        function check_full_win(){
+            // Check if Anyone has won
+            if (check_win(1) == (3)){
+                alert("You Won!!!");
+                disable_game = true;
+                return true;
+            }
+            if (check_win(-1) == (-3)){
+                alert("You Lost :(");
+                disable_game = true;
+                return true;
+            }
+        }
+
+        function algo_update(){
+            console.log("Updating Grid...");
+            console.log(cell_states);
+                
+
+            if (check_full_win())return;
+                
+
+            // Determine if Site can win
+            var site_max, win_path;
+            [site_max, win_path] = check_win(-1);
+            //alert(site_max);
+               
+            // WIN
+            if (site_max == -2){
+                console.log("Checking for last cell");
+                for (let index=0; index<3; index++){
+                    var cell = win_path[index];
+                    var row = cell[0];
+                    var col = cell[1];
+
+                    if (cell_states[row][col] == 0){
+                        console.log("Winning..");
+                        site_click(row, col);
+                        return;
+                    }
+                }
+            }
+
+            // Determine if Player About to Win
+            var player_max, win_path;
+            [player_max, win_path] = check_win(1);
+
+            // Block Off Cell
+            if (player_max == 2){
+                console.log("Checking for last cell");
+                for (let index=0; index<3; index++){
+                    var cell = win_path[index];
+                    var row = cell[0];
+                    var col = cell[1];
+
+                    if (cell_states[row][col] == 0){
+                        console.log("Stopping Win..");
+                        site_click(row, col);
+                        return;
+                    }
+                }
+            }
+
+            // Else just pick a good cell (probably gd enough for tic tac toe)
+            for (let index=0; index<9; index++){
+                var cell = priority_list[index];
+                var row = cell[0];
+                var col = cell[1];
+                if (cell_states[row][col] == 0){
+                    site_click(row, col);
+                    return;
+                }
+            }
+
+            
+            
+        }
+
+        // Checks Near Wins and Full Wins
+        function check_win(val){
+            var max_val = 0;
+            var max_win_path = [0,0,0];
+
+            function update_max_values(count, win_path){
+                
+                max_val = Math.max(max_val, count);
+                if (max_val == count){
+                    for(let i=0; i<3;i++)max_win_path[i] = win_path[i];
+                }
+            }
+
+            function update_min_values(count, win_path){
+                max_val = Math.min(max_val, count);
+                if (max_val == count){
+                    for(let i=0; i<3;i++)max_win_path[i] = win_path[i];
+                }
+            }
+
+            // Check Column Style Victory
+            for(let col=0; col<3; col++){
+                let count = 0;
+                let win_path = [];
+                for (let row=0; row<3; row++){
+                    count += cell_states[row][col] 
+                    win_path.push([row, col])
+                }
+
+                // Check Full Victory
+                if (count == val*3)return ((val*3));
+                
+                // Update Near Win
+                if (val == 1)update_max_values(count, win_path);
+                else update_min_values(count, win_path);
+                
+            }
+            // Check Row Style Victory
+            for(let row=0; row<3; row++){
+                let count = 0;
+                let win_path = [];
+                for (let col=0; col<3; col++){
+                    count += cell_states[row][col] 
+                    win_path.push([row, col])
+                }
+
+                // Check Full Victory
+                if (count == val*3)return ((val*3));
+
+                // Update Near Win
+                // Update Near Win
+                if (val == 1)update_max_values(count, win_path);
+                else update_min_values(count, win_path);
+            }
+
+            // Check Diagonal Style Victory
+            let back_slash_val = cell_states[0][0] + cell_states[1][1] + cell_states[2][2];
+            let back_slash_path = [[0,0], [1,1], [2,2]];
+
+            if (back_slash_val == val*3)return ((val*3));
+            if (val == 1)update_max_values(back_slash_val, back_slash_path);
+            else update_min_values(back_slash_val, back_slash_path);
+            
+
+            let forward_slash_val = cell_states[0][2] + cell_states[1][1] + cell_states[2][0];
+            let forward_slash_path = [[0,2], [1,1], [2,0]];
+            if (forward_slash_val == val*3)return ((val*3));
+            if (val == 1)update_max_values(forward_slash_val, forward_slash_path);
+            else update_min_values(forward_slash_val, forward_slash_path);
+
+            // Return Max Val with copy of winning path
+            //console.log("Max Val to Return " + max_val);
+            //console.log(max_win_path.slice());
+            return [max_val, max_win_path.slice()];
+        }
+
+
+        function reset_game(){
+            disable_game = false;
+            cell_states = [[0,0,0],[0,0,0],[0,0,0]];
+            $(".cell").each(function(){
+                $(this).html("");
+            });
+            $('#start_button').show();
+        }
+        $('.ui.checkbox').checkbox();
+    </script>
+        
+	</body>
+    
+
+</html>
