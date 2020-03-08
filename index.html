@@ -83,7 +83,7 @@
                         <br>
                         <div style="text-align: center;">
                             <button class="ui button" onclick="reset_game()">Reset Game</button>
-                            <button class="ui button" id="start_button" onclick="site_click(1,1)">Start Game</button>
+                            <button class="ui button" id="start_button" onclick="site_start_fn()">Start Game</button>
                         </div>
                         
                     </div>
@@ -93,7 +93,7 @@
         </div>
         
     <script>
-        
+        var site_start = 0;
         var priority_list = [[1,1], [0,0], [0,2], [2,0], [2,2], [0,1], [1,0], [1,2], [2,1]];
         var cell_states = [[0,0,0],[0,0,0],[0,0,0]]; //3x3 Matrix
         var disable_game = false;
@@ -118,7 +118,7 @@
             if (disable_game)return;
 
             var val;
-            if (cell_states_sum() % 2 == 0){
+            if (cell_states_sum() % 2 == site_start){
                 img_html = "<img class='cross' src='./static_files/img/cross.svg'>";
                 val = 1;
             }
@@ -146,6 +146,12 @@
             
                 
         })
+
+        function site_start_fn(){
+            site_start = 1;
+            site_click(1,1);
+        }
+
 
         function site_click(row, col){
             cell_states[row][col] = -1;
@@ -312,6 +318,7 @@
 
         function reset_game(){
             disable_game = false;
+            site_start = 0;
             cell_states = [[0,0,0],[0,0,0],[0,0,0]];
             $(".cell").each(function(){
                 $(this).html("");
