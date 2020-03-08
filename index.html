@@ -118,7 +118,7 @@
             if (disable_game)return;
 
             var val;
-            if (cell_states_sum() % 2 == site_start){
+            if (cell_states_sum() % 2 == site_start || cell_states_sum() % 2 == -1 * site_start){
                 img_html = "<img class='cross' src='./static_files/img/cross.svg'>";
                 val = 1;
             }
