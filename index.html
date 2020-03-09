@@ -231,12 +231,13 @@
                     }
                 }
             }
+            // Edge cases
             if (cell_states[0][0] == 1 && cell_states[2][2] == 1 && cell_states[1][1] == -1 && cell_states[0][1] == 0){
                 site_click(0,1);
                 return;
             }
             if (cell_states[0][2] == 1 && cell_states[2][0] == 1 && cell_states[1][1] == -1 && cell_states[0][1] == 0){
-                site_click(0,1);
+                site_click(2,1);
                 return;
             }
             // Else just pick a good cell (probably gd enough for tic tac toe)
