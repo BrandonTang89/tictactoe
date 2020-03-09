@@ -113,6 +113,16 @@
             }
             return sum;
         }
+        
+        function cell_states_abssum(){
+            var sum = 0;
+            for (var i=0; i < 3; i++){
+                for (var j=0; j<3; j++){
+                    sum += Math.abs(cell_states[i][j]);
+                }
+            }
+            return sum;
+        }
         // Function to Process User Clicks
         $('div.cell').click(function(){
             if (disable_game)return;
@@ -180,7 +190,7 @@
             console.log(cell_states);
                 
 
-            if (cell_states[0][0] +cell_states[0][2] +cell_states[2][0] + cell_states[2][2] == -1 && cell_states[1][1] == 0){
+            if (cell_states_abssum() > 2 && cell_states[1][1] == 0){
                 site_click(1,1);
                 return;
             }
