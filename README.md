@@ -10,7 +10,7 @@ The bot is coded such that it plays somewhat optimally, any games played against
 ## Strategy of Bot
 1. If a circle can be played such that the bot wins, the bot places the circle to win.
 2. If the player can win in 1 turn, the bot plays to stop it
-4. Edge Case: If the board is as follows, do the following move
+4. Edge Case: If the board is as follows (or 90 degrees rotation of the following), do the following move
 <pre>
 X| |               X|O| 
 -----              -----
