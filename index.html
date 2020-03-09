@@ -180,8 +180,11 @@
             console.log(cell_states);
                 
 
-            if (check_full_win())return;
-                
+            if (cell_states[0][0] +cell_states[0][2] +cell_states[2][0] + cell_states[2][2] == -1 && cell_states[1][1] == 0){
+                site_click(1,1);
+                return;
+            }
+             
 
             // Determine if Site can win
             var site_max, win_path;
