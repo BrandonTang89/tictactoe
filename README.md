@@ -14,7 +14,7 @@ The bot is coded such that it plays somewhat optimally, any games played against
 <pre>
 X| |               X|O| 
 -----              -----
- |O|          -->   |O| 
+ |O|       -->      |O| 
 -----              -----
  | |X               | |X
 </pre> 
