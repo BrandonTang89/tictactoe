@@ -190,10 +190,7 @@
             console.log(cell_states);
                 
 
-            if (cell_states_abssum() > 2 && cell_states[1][1] == 0){
-                site_click(1,1);
-                return;
-            }
+            
              
 
             // Determine if Site can win
@@ -236,7 +233,10 @@
                     }
                 }
             }
-
+            if (cell_states_abssum() > 2 && cell_states[1][1] == 0){
+                site_click(1,1);
+                return;
+            }
             // Else just pick a good cell (probably gd enough for tic tac toe)
             for (let index=0; index<9; index++){
                 var cell = priority_list[index];
@@ -247,6 +247,7 @@
                     return;
                 }
             }
+            
 
             
             
