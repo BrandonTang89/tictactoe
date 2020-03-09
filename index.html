@@ -61,9 +61,9 @@
                     
                     <div class="main_content">
                         <div class="ui huge dividing header" id="overview">Tic Tac Toe</div>
-                        <div class="ui toggle checkbox" id="player_check_div">
-                            <input type="checkbox" tabindex="0" class="hidden" id="2_player_check">
-                            <label>Play Against Another Human</label>
+                        <div class="ui slider checkbox" id="player_check_div">
+                            <input type="checkbox" tabindex="0" class="hidden" id="2_player_check" checked>
+                            <label>Activate Bot</label>
                         </div>
                         <br>
                         <br>
@@ -101,6 +101,7 @@
         // Reset When Changing Game Tyoe
         $('#player_check_div').click(function(){
             reset_game();
+            if ($("#2_player_check").prop("checked") == true) $('#start_button').hide();
         });
 
         // Function to tell whether it is player 1 or 2 turns
@@ -114,15 +115,6 @@
             return sum;
         }
         
-        function cell_states_abssum(){
-            var sum = 0;
-            for (var i=0; i < 3; i++){
-                for (var j=0; j<3; j++){
-                    sum += Math.abs(cell_states[i][j]);
-                }
-            }
-            return sum;
-        }
         // Function to Process User Clicks
         $('div.cell').click(function(){
             if (disable_game)return;
@@ -148,7 +140,7 @@
 
                 if (check_full_win()) return ;
 
-                if ($("#2_player_check").prop("checked") == false)algo_update();
+                if ($("#2_player_check").prop("checked") == true)algo_update();
             }
             else{
                 console.log($this.html());
