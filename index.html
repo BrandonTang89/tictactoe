@@ -95,250 +95,250 @@
             </div>
         </div>
         
-    <script>
-        var site_start = 0;
-        var priority_list = [[1,1], [0,2], [2,2], [0,2], [2,0], [0,1], [1,0], [1,2], [2,1]];
-        var cell_states = [[0,0,0],[0,0,0],[0,0,0]]; //3x3 Matrix
-        var disable_game = false;
-        
-        // Reset When Changing Game Tyoe
-        $('#player_check_div').click(function(){
-            reset_game();
-            if ($("#2_player_check").prop("checked") == true) $('#start_button').hide();
-        });
+        <script>
+            var site_start = 0;
+            var priority_list = [[1,1], [0,2], [2,2], [0,2], [2,0], [0,1], [1,0], [1,2], [2,1]];
+            var cell_states = [[0,0,0],[0,0,0],[0,0,0]]; //3x3 Matrix
+            var disable_game = false;
+            
+            // Reset When Changing Game Tyoe
+            $('#player_check_div').click(function(){
+                reset_game();
+                if ($("#2_player_check").prop("checked") == true) $('#start_button').hide();
+            });
 
-        // Function to tell whether it is player 1 or 2 turns
-        function cell_states_sum(){
-            var sum = 0;
-            for (var i=0; i < 3; i++){
-                for (var j=0; j<3; j++){
-                    sum += cell_states[i][j];
+            // Function to tell whether it is player 1 or 2 turns
+            function cell_states_sum(){
+                var sum = 0;
+                for (var i=0; i < 3; i++){
+                    for (var j=0; j<3; j++){
+                        sum += cell_states[i][j];
+                    }
                 }
-            }
-            return sum;
-        }
-        
-        // Function to Process User Clicks
-        $('div.cell').click(function(){
-            if (disable_game)return;
-
-            var val;
-            if (cell_states_sum() % 2 == site_start || cell_states_sum() % 2 == -1 * site_start){
-                img_html = "<img class='cross' src='./static_files/img/cross.svg'>";
-                val = 1;
-            }
-            else{
-                img_html = "<img class='circle' src='./static_files/img/circle.png'>";
-                val = -1;
-            }               
-
-            var cell_id = this.id;
-            var $this = $(this);
-            if ($this.html() == ""){
-                $this.html(img_html);
-                    
-                var row = cell_id[0];
-                var column = cell_id[1];
-                cell_states[row][column] = val;
-
-                if (check_full_win()) return ;
-
-                if ($("#2_player_check").prop("checked") == true)algo_update();
-            }
-            else{
-                console.log($this.html());
+                return sum;
             }
             
+            // Function to Process User Clicks
+            $('div.cell').click(function(){
+                if (disable_game)return;
+
+                var val;
+                if (cell_states_sum() % 2 == site_start || cell_states_sum() % 2 == -1 * site_start){
+                    img_html = "<img class='cross' src='./static_files/img/cross.svg'>";
+                    val = 1;
+                }
+                else{
+                    img_html = "<img class='circle' src='./static_files/img/circle.png'>";
+                    val = -1;
+                }               
+
+                var cell_id = this.id;
+                var $this = $(this);
+                if ($this.html() == ""){
+                    $this.html(img_html);
+                        
+                    var row = cell_id[0];
+                    var column = cell_id[1];
+                    cell_states[row][column] = val;
+
+                    if (check_full_win()) return ;
+
+                    if ($("#2_player_check").prop("checked") == true)algo_update();
+                }
+                else{
+                    console.log($this.html());
+                }
                 
-        })
+                    
+            })
 
-        function site_start_fn(){
-            site_start = 1;
-            site_click(1,1);
-        }
-
-
-        function site_click(row, col){
-            cell_states[row][col] = -1;
-            id = "#" + row.toString() + col.toString() + "_cell";
-            $(id).html("<img class='circle' src='./static_files/img/circle.png'>");
-            $('#start_button').hide();
-            check_full_win();
-        }
-
-        function check_full_win(){
-            // Check if Anyone has won
-            if (check_win(1) == (3)){
-                alert("You Won!!!");
-                disable_game = true;
-                return true;
+            function site_start_fn(){
+                site_start = 1;
+                site_click(1,1);
             }
-            if (check_win(-1) == (-3)){
-                alert("You Lost :(");
-                disable_game = true;
-                return true;
+
+
+            function site_click(row, col){
+                cell_states[row][col] = -1;
+                id = "#" + row.toString() + col.toString() + "_cell";
+                $(id).html("<img class='circle' src='./static_files/img/circle.png'>");
+                $('#start_button').hide();
+                check_full_win();
             }
-        }
 
-        function algo_update(){
-            console.log("Updating Grid...");
-            console.log(cell_states);
-                
-             
-
-            // Determine if Site can win
-            var site_max, win_path;
-            [site_max, win_path] = check_win(-1);
-            //alert(site_max);
-               
-            // WIN
-            if (site_max == -2){
-                console.log("Checking for last cell");
-                for (let index=0; index<3; index++){
-                    var cell = win_path[index];
-                    var row = cell[0];
-                    var col = cell[1];
-
-                    if (cell_states[row][col] == 0){
-                        console.log("Winning..");
-                        site_click(row, col);
-                        return;
-                    }
+            function check_full_win(){
+                // Check if Anyone has won
+                if (check_win(1) == (3)){
+                    alert("You Won!!!");
+                    disable_game = true;
+                    return true;
+                }
+                if (check_win(-1) == (-3)){
+                    alert("You Lost :(");
+                    disable_game = true;
+                    return true;
                 }
             }
 
-            // Determine if Player About to Win
-            var player_max, win_path;
-            [player_max, win_path] = check_win(1);
+            function algo_update(){
+                console.log("Updating Grid...");
+                console.log(cell_states);
+                    
+                
 
-            // Block Off Cell
-            if (player_max == 2){
-                console.log("Checking for last cell");
-                for (let index=0; index<3; index++){
-                    var cell = win_path[index];
-                    var row = cell[0];
-                    var col = cell[1];
+                // Determine if Site can win
+                var site_max, win_path;
+                [site_max, win_path] = check_win(-1);
+                //alert(site_max);
+                
+                // WIN
+                if (site_max == -2){
+                    console.log("Checking for last cell");
+                    for (let index=0; index<3; index++){
+                        var cell = win_path[index];
+                        var row = cell[0];
+                        var col = cell[1];
 
-                    if (cell_states[row][col] == 0){
-                        console.log("Stopping Win..");
-                        site_click(row, col);
-                        return;
+                        if (cell_states[row][col] == 0){
+                            console.log("Winning..");
+                            site_click(row, col);
+                            return;
+                        }
                     }
                 }
-            }
-            // Edge cases
-            if (cell_states[0][0] == 1 && cell_states[2][2] == 1 && cell_states[1][1] == -1 && cell_states[0][1] == 0){
-                site_click(0,1);
-                return;
-            }
-            if (cell_states[0][2] == 1 && cell_states[2][0] == 1 && cell_states[1][1] == -1 && cell_states[0][1] == 0){
-                site_click(2,1);
-                return;
-            }
-            // Else just pick a good cell (probably gd enough for tic tac toe)
-            for (let index=0; index<9; index++){
-                var cell = priority_list[index];
-                var row = cell[0];
-                var col = cell[1];
-                if (cell_states[row][col] == 0){
-                    site_click(row, col);
+
+                // Determine if Player About to Win
+                var player_max, win_path;
+                [player_max, win_path] = check_win(1);
+
+                // Block Off Cell
+                if (player_max == 2){
+                    console.log("Checking for last cell");
+                    for (let index=0; index<3; index++){
+                        var cell = win_path[index];
+                        var row = cell[0];
+                        var col = cell[1];
+
+                        if (cell_states[row][col] == 0){
+                            console.log("Stopping Win..");
+                            site_click(row, col);
+                            return;
+                        }
+                    }
+                }
+                // Edge cases
+                if (cell_states[0][0] == 1 && cell_states[2][2] == 1 && cell_states[1][1] == -1 && cell_states[0][1] == 0){
+                    site_click(0,1);
                     return;
                 }
-            }
-            
-
-            
-            
-        }
-
-        // Checks Near Wins and Full Wins
-        function check_win(val){
-            var max_val = 0;
-            var max_win_path = [0,0,0];
-
-            function update_max_values(count, win_path){
+                if (cell_states[0][2] == 1 && cell_states[2][0] == 1 && cell_states[1][1] == -1 && cell_states[0][1] == 0){
+                    site_click(2,1);
+                    return;
+                }
+                // Else just pick a good cell (probably gd enough for tic tac toe)
+                for (let index=0; index<9; index++){
+                    var cell = priority_list[index];
+                    var row = cell[0];
+                    var col = cell[1];
+                    if (cell_states[row][col] == 0){
+                        site_click(row, col);
+                        return;
+                    }
+                }
                 
-                max_val = Math.max(max_val, count);
-                if (max_val == count){
-                    for(let i=0; i<3;i++)max_win_path[i] = win_path[i];
-                }
-            }
 
-            function update_min_values(count, win_path){
-                max_val = Math.min(max_val, count);
-                if (max_val == count){
-                    for(let i=0; i<3;i++)max_win_path[i] = win_path[i];
-                }
-            }
-
-            // Check Column Style Victory
-            for(let col=0; col<3; col++){
-                let count = 0;
-                let win_path = [];
-                for (let row=0; row<3; row++){
-                    count += cell_states[row][col] 
-                    win_path.push([row, col])
-                }
-
-                // Check Full Victory
-                if (count == val*3)return ((val*3));
                 
-                // Update Near Win
-                if (val == 1)update_max_values(count, win_path);
-                else update_min_values(count, win_path);
                 
             }
-            // Check Row Style Victory
-            for(let row=0; row<3; row++){
-                let count = 0;
-                let win_path = [];
-                for (let col=0; col<3; col++){
-                    count += cell_states[row][col] 
-                    win_path.push([row, col])
+
+            // Checks Near Wins and Full Wins
+            function check_win(val){
+                var max_val = 0;
+                var max_win_path = [0,0,0];
+
+                function update_max_values(count, win_path){
+                    
+                    max_val = Math.max(max_val, count);
+                    if (max_val == count){
+                        for(let i=0; i<3;i++)max_win_path[i] = win_path[i];
+                    }
                 }
 
-                // Check Full Victory
-                if (count == val*3)return ((val*3));
+                function update_min_values(count, win_path){
+                    max_val = Math.min(max_val, count);
+                    if (max_val == count){
+                        for(let i=0; i<3;i++)max_win_path[i] = win_path[i];
+                    }
+                }
 
-                // Update Near Win
-                // Update Near Win
-                if (val == 1)update_max_values(count, win_path);
-                else update_min_values(count, win_path);
+                // Check Column Style Victory
+                for(let col=0; col<3; col++){
+                    let count = 0;
+                    let win_path = [];
+                    for (let row=0; row<3; row++){
+                        count += cell_states[row][col] 
+                        win_path.push([row, col])
+                    }
+
+                    // Check Full Victory
+                    if (count == val*3)return ((val*3));
+                    
+                    // Update Near Win
+                    if (val == 1)update_max_values(count, win_path);
+                    else update_min_values(count, win_path);
+                    
+                }
+                // Check Row Style Victory
+                for(let row=0; row<3; row++){
+                    let count = 0;
+                    let win_path = [];
+                    for (let col=0; col<3; col++){
+                        count += cell_states[row][col] 
+                        win_path.push([row, col])
+                    }
+
+                    // Check Full Victory
+                    if (count == val*3)return ((val*3));
+
+                    // Update Near Win
+                    // Update Near Win
+                    if (val == 1)update_max_values(count, win_path);
+                    else update_min_values(count, win_path);
+                }
+
+                // Check Diagonal Style Victory
+                let back_slash_val = cell_states[0][0] + cell_states[1][1] + cell_states[2][2];
+                let back_slash_path = [[0,0], [1,1], [2,2]];
+
+                if (back_slash_val == val*3)return ((val*3));
+                if (val == 1)update_max_values(back_slash_val, back_slash_path);
+                else update_min_values(back_slash_val, back_slash_path);
+                
+
+                let forward_slash_val = cell_states[0][2] + cell_states[1][1] + cell_states[2][0];
+                let forward_slash_path = [[0,2], [1,1], [2,0]];
+                if (forward_slash_val == val*3)return ((val*3));
+                if (val == 1)update_max_values(forward_slash_val, forward_slash_path);
+                else update_min_values(forward_slash_val, forward_slash_path);
+
+                // Return Max Val with copy of winning path
+                //console.log("Max Val to Return " + max_val);
+                //console.log(max_win_path.slice());
+                return [max_val, max_win_path.slice()];
             }
 
-            // Check Diagonal Style Victory
-            let back_slash_val = cell_states[0][0] + cell_states[1][1] + cell_states[2][2];
-            let back_slash_path = [[0,0], [1,1], [2,2]];
 
-            if (back_slash_val == val*3)return ((val*3));
-            if (val == 1)update_max_values(back_slash_val, back_slash_path);
-            else update_min_values(back_slash_val, back_slash_path);
-            
-
-            let forward_slash_val = cell_states[0][2] + cell_states[1][1] + cell_states[2][0];
-            let forward_slash_path = [[0,2], [1,1], [2,0]];
-            if (forward_slash_val == val*3)return ((val*3));
-            if (val == 1)update_max_values(forward_slash_val, forward_slash_path);
-            else update_min_values(forward_slash_val, forward_slash_path);
-
-            // Return Max Val with copy of winning path
-            //console.log("Max Val to Return " + max_val);
-            //console.log(max_win_path.slice());
-            return [max_val, max_win_path.slice()];
-        }
-
-
-        function reset_game(){
-            disable_game = false;
-            site_start = 0;
-            cell_states = [[0,0,0],[0,0,0],[0,0,0]];
-            $(".cell").each(function(){
-                $(this).html("");
-            });
-            $('#start_button').show();
-        }
-        $('.ui.checkbox').checkbox();
-    </script>
+            function reset_game(){
+                disable_game = false;
+                site_start = 0;
+                cell_states = [[0,0,0],[0,0,0],[0,0,0]];
+                $(".cell").each(function(){
+                    $(this).html("");
+                });
+                $('#start_button').show();
+            }
+            $('.ui.checkbox').checkbox();
+        </script>
         
 	</body>
     
